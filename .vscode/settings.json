@@ -1,0 +1,10 @@
+{
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "cmake.configureOnOpen": true,
+  "files.associations": {
+    "*.cool": "c",
+    "tusb.h": "c",
+    "usb_descriptors.h": "c",
+    "main.h": "c"
+  }
+}
