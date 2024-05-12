@@ -245,7 +245,6 @@ char const *string_desc_arr[] = {
     "Neptunium",                // 2: Product
     NULL,                       // 3: Serials will use unique ID if possible
     "Neptunium CDC",            // 4: CDC Interface
-    "Neptunium MSC",            // 5: MSC Interface
 };
 
 #define DESC_STR_SIZE 32 // bytes
