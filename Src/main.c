@@ -57,7 +57,20 @@ void renumerate_usb(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+#define CHUNK_SIZE 64
+// Write string constants which have a size over one block (64)
+void safe_cdc_write_const(char message[], uint32_t message_size)
+{
+  char *chunk = message;
+  for (size_t i = 0; i + CHUNK_SIZE < message_size; i += CHUNK_SIZE)
+  {
+    tud_cdc_write(chunk, CHUNK_SIZE);
+    tud_cdc_write_flush();
+    chunk += CHUNK_SIZE;
+  }
+  tud_cdc_write(chunk, strlen(chunk));
+  tud_cdc_write_flush();
+}
 /* USER CODE END 0 */
 
 /**
@@ -99,6 +112,19 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+// NOTE: This help message is not displayed when using the VScode serial monitor.
+#define HELP_MSG "Echo test. Any text sent over serial should be echoed back immediately.\r\n"
+  while (1)
+  {
+    tud_task();
+    if (tud_cdc_connected())
+    {
+      safe_cdc_write_const(HELP_MSG, sizeof(HELP_MSG));
+      break;
+    }
+  }
+
   while (1)
   {
     tud_task();
@@ -123,7 +149,6 @@ void cdc_task(void)
   // {
 #define ECHO_TEXT "ECHO=\""
 #define END_TEXT "\"\n"
-  tud_cdc_write(ECHO_TEXT, sizeof(ECHO_TEXT));
   while (tud_cdc_available())
   {
     uint8_t buf[64];
@@ -133,7 +158,6 @@ void cdc_task(void)
     tud_cdc_write(buf, count);
     tud_cdc_write_flush();
   }
-  tud_cdc_write(END_TEXT, sizeof(END_TEXT));
   // }
 }
 
